@@ -438,6 +438,205 @@
             color: var(--pink);
         }
 
+        .rules-section {
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .rules-toggle {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .rules-toggle:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .rules-content {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .rules-content.show {
+            display: block;
+        }
+
+        .rules-category {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .rules-category h4 {
+            font-family: 'Fredoka One', cursive;
+            padding: 1rem;
+            margin: 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .rules-category h4:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .good-rules h4 {
+            color: var(--gold);
+        }
+
+        .bad-rules h4 {
+            color: var(--pink);
+        }
+
+        .bonus-rules h4 {
+            color: var(--purple);
+        }
+
+        .toggle-icon {
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .rules-list {
+            padding: 0 1rem 1rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .rules-list.collapsed {
+            display: none;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.6rem 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .rule-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .rule-item.earn .rule-points {
+            background: linear-gradient(135deg, var(--gold) 0%, #ffaa00 100%);
+            color: var(--dark);
+        }
+
+        .rule-item.lose .rule-points {
+            background: linear-gradient(135deg, var(--pink) 0%, #ff4466 100%);
+            color: white;
+        }
+
+        .rule-item.bonus .rule-points {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+            color: white;
+        }
+
+        .rule-points {
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.9rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .rule-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .rule-name {
+            font-weight: 600;
+            color: var(--cream);
+            font-size: 0.95rem;
+        }
+
+        .rule-note {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .music-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--pink);
+            color: var(--pink);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .music-btn:hover {
+            background: var(--pink);
+            color: var(--dark);
+        }
+
+        .music-btn.playing {
+            background: var(--pink);
+            color: var(--dark);
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 107, 157, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 107, 157, 0.8); }
+        }
+
+        .music-icon {
+            font-size: 1rem;
+        }
+
+        .now-playing {
+            font-size: 0.7rem;
+            color: var(--pink-light);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .now-playing.show {
+            opacity: 1;
+        }
+
         .floating-stars {
             position: fixed;
             top: 0;
@@ -743,6 +942,199 @@
                     <div class="history-list" id="historyList"></div>
                 </div>
 
+                <div class="rules-section">
+                    <button class="rules-toggle" onclick="toggleRules()">
+                        📋 View Rules
+                    </button>
+                    <div class="rules-content" id="rulesContent">
+                        <div class="rules-category good-rules">
+                            <h4 onclick="toggleRuleCategory('goodRules')">⭐ Earning Stars <span class="toggle-icon" id="goodRulesIcon">▼</span></h4>
+                            <div class="rules-list" id="goodRules">
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Following instructions without bratting</span>
+                                        <span class="rule-note">First time, no pushback</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Completing tasks/chores</span>
+                                        <span class="rule-note">Dishes, tidying, errands</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Using manners unprompted</span>
+                                        <span class="rule-note">"Please", "Thank you", "Sir"</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Being patient</span>
+                                        <span class="rule-note">No whining or pestering</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Sending good morning/goodnight texts</span>
+                                        <span class="rule-note">Consistency matters</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+2</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Surprise acts of service</span>
+                                        <span class="rule-note">Making tea, back rubs, etc.</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+2</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Admitting when wrong</span>
+                                        <span class="rule-note">Without being defensive</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+2</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Going above and beyond</span>
+                                        <span class="rule-note">Extra effort on something</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+3</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Being brave</span>
+                                        <span class="rule-note">Trying something new/hard, facing fears</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item earn">
+                                    <span class="rule-points">+5</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Full day of perfect behavior</span>
+                                        <span class="rule-note">No warnings needed</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rules-category bad-rules">
+                            <h4 onclick="toggleRuleCategory('badRules')">💔 Losing Stars <span class="toggle-icon" id="badRulesIcon">▼</span></h4>
+                            <div class="rules-list" id="badRules">
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Eye rolling</span>
+                                        <span class="rule-note">Attitude check</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Whining/pouting</span>
+                                        <span class="rule-note">Use your words properly</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Talking back</span>
+                                        <span class="rule-note">Sass without permission</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Forgetting manners</span>
+                                        <span class="rule-note">No "please" or "thank you"</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-2</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Ignoring messages</span>
+                                        <span class="rule-note">Within reasonable time</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-2</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Lying (small)</span>
+                                        <span class="rule-note">White lies, omissions</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-2</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Breaking a rule</span>
+                                        <span class="rule-note">Established boundaries</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-3</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Tantrum/attitude blowup</span>
+                                        <span class="rule-note">Full bratty meltdown</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-5</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Lying (big)</span>
+                                        <span class="rule-note">Trust issues</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item lose">
+                                    <span class="rule-points">-5</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Deliberately disobeying</span>
+                                        <span class="rule-note">Knew the rule, did it anyway</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rules-category bonus-rules">
+                            <h4 onclick="toggleRuleCategory('bonusRules')">🎯 Bonus Modifiers <span class="toggle-icon" id="bonusRulesIcon">▼</span></h4>
+                            <div class="rules-list" id="bonusRules">
+                                <div class="rule-item bonus">
+                                    <span class="rule-points">×2</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Repeat offense same day</span>
+                                        <span class="rule-note">Double the penalty</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item bonus">
+                                    <span class="rule-points">-1</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Unprompted confession</span>
+                                        <span class="rule-note">Reduce penalty by 1</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item bonus">
+                                    <span class="rule-points">+2</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Consistency streak (3+ days good)</span>
+                                        <span class="rule-note">Bonus for being good</span>
+                                    </div>
+                                </div>
+                                <div class="rule-item bonus">
+                                    <span class="rule-points">+3</span>
+                                    <div class="rule-info">
+                                        <span class="rule-name">Weekly review: mostly good</span>
+                                        <span class="rule-note">End of week bonus</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="controls" id="resetControls" style="margin-top: 1.5rem;">
                     <button class="btn btn-reset" onclick="resetBoard()">
                         🔄 Reset Board
@@ -756,6 +1148,20 @@
     <div class="mode-switcher">
         <button onclick="openModeModal()" id="modeSwitchBtn">🔐 Switch Mode</button>
     </div>
+
+    <!-- Music Player -->
+    <div class="music-player">
+        <button class="music-btn" id="musicBtn" onclick="toggleMusic()">
+            <span class="music-icon" id="musicIcon">▶️</span>
+            <span>Music</span>
+        </button>
+        <span class="now-playing" id="nowPlaying">♪ Cupid - FIFTY FIFTY</span>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop>
+        <source src="cupid.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- Name Edit Modal -->
     <div class="modal-overlay" id="nameModal">
@@ -1082,6 +1488,48 @@
             const list = document.getElementById('historyList');
             list.classList.toggle('show');
         }
+
+        function toggleRules() {
+            const content = document.getElementById('rulesContent');
+            content.classList.toggle('show');
+        }
+
+        function toggleRuleCategory(categoryId) {
+            const list = document.getElementById(categoryId);
+            const icon = document.getElementById(categoryId + 'Icon');
+            list.classList.toggle('collapsed');
+            icon.classList.toggle('collapsed');
+        }
+
+        // Music Player
+        let isPlaying = false;
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        const nowPlaying = document.getElementById('nowPlaying');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicIcon.textContent = '▶️';
+                musicBtn.classList.remove('playing');
+                nowPlaying.classList.remove('show');
+            } else {
+                bgMusic.play();
+                musicIcon.textContent = '⏸️';
+                musicBtn.classList.add('playing');
+                nowPlaying.classList.add('show');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Reset button state if music ends (though it loops)
+        bgMusic.addEventListener('ended', () => {
+            musicIcon.textContent = '▶️';
+            musicBtn.classList.remove('playing');
+            nowPlaying.classList.remove('show');
+            isPlaying = false;
+        });
 
         function resetBoard() {
             if (!isDomMode) return;
