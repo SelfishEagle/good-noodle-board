@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Good Noodle Board ⭐</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pink: #ff6b9d;
+            --pink-light: #ffa3c4;
+            --purple: #c44cff;
+            --purple-dark: #9b30cc;
+            --gold: #ffd700;
+            --gold-dark: #daa520;
+            --cream: #fff8f0;
+            --dark: #2d1f3d;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #1a1025 0%, #2d1f3d 50%, #1f1a2e 100%);
+            min-height: 100vh;
+            color: var(--cream);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--pink) 50%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 30px rgba(255, 107, 157, 0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--pink-light);
+            opacity: 0.8;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+
+        .mode-badge.dom {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+            color: white;
+        }
+
+        .mode-badge.brat {
+            background: linear-gradient(135deg, var(--pink) 0%, var(--gold) 100%);
+            color: var(--dark);
+        }
+
+        .noodle-name-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .noodle-name {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            color: var(--pink);
+            text-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+        }
+
+        .edit-name-btn {
+            background: transparent;
+            border: 2px solid var(--pink);
+            color: var(--pink);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .edit-name-btn:hover {
+            background: var(--pink);
+            color: var(--dark);
+        }
+
+        .board {
+            background: linear-gradient(145deg, #3d2a54 0%, #2a1d3a 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 3px solid var(--purple-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .board::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.03) 0%, transparent 50%);
+            animation: shimmer 10s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .score-display {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--pink-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .score-number {
+            font-family: 'Fredoka One', cursive;
+            font-size: 5rem;
+            color: var(--gold);
+            text-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.5),
+                0 4px 0 var(--gold-dark);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .score-number.bounce {
+            animation: scoreBounce 0.5s ease;
+        }
+
+        @keyframes scoreBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .star-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 10px;
+            margin-bottom: 2rem;
+            min-height: 120px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .star {
+            font-size: 2.5rem;
+            animation: starAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: default;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            transition: transform 0.2s ease;
+        }
+
+        .star:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        @keyframes starAppear {
+            0% { 
+                opacity: 0; 
+                transform: scale(0) rotate(-180deg); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) rotate(0deg); 
+            }
+        }
+
+        .star.removing {
+            animation: starRemove 0.4s ease forwards;
+        }
+
+        @keyframes starRemove {
+            0% { 
+                opacity: 1; 
+                transform: scale(1); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: scale(0) rotate(180deg); 
+            }
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .controls.hidden {
+            display: none;
+        }
+
+        .btn {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--gold) 0%, #ffaa00 100%);
+            color: var(--dark);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-add:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-remove {
+            background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        .btn-remove:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 107, 157, 0.5);
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            padding: 0.8rem 1.5rem;
+        }
+
+        .btn-reset:hover {
+            border-color: var(--pink);
+            color: var(--pink);
+        }
+
+        .status-section {
+            margin-top: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.3rem;
+            transition: all 0.5s ease;
+        }
+
+        .status-good {
+            background: linear-gradient(135deg, var(--gold) 0%, #ffaa00 100%);
+            color: var(--dark);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .status-neutral {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+            color: white;
+            box-shadow: 0 0 30px rgba(196, 76, 255, 0.4);
+        }
+
+        .status-bad {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: white;
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.5);
+        }
+
+        .milestones {
+            margin-top: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .milestones h3 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--pink-light);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .milestone-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .milestone {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .milestone.achieved {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 170, 0, 0.1) 100%);
+            border: 1px solid var(--gold);
+        }
+
+        .milestone-icon {
+            font-size: 1.5rem;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .milestone.achieved .milestone-icon {
+            opacity: 1;
+            animation: celebratePulse 1s ease infinite;
+        }
+
+        @keyframes celebratePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .milestone-info {
+            flex: 1;
+        }
+
+        .milestone-points {
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .milestone-reward {
+            font-size: 0.9rem;
+            color: var(--pink-light);
+        }
+
+        .history-section {
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .history-toggle {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .history-toggle:hover {
+            border-color: var(--pink);
+            color: var(--pink);
+        }
+
+        .history-list {
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .history-list.show {
+            display: block;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+        }
+
+        .history-item.add {
+            color: var(--gold);
+        }
+
+        .history-item.remove {
+            color: var(--pink);
+        }
+
+        .floating-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-star {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.15;
+            animation: float 15s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.15;
+            }
+            90% {
+                opacity: 0.15;
+            }
+            100% {
+                transform: translateY(-100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            z-index: 100;
+            animation: celebrate 1s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes celebrate {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.5);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(2);
+            }
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: linear-gradient(145deg, #3d2a54 0%, #2a1d3a 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            border: 3px solid var(--purple-dark);
+        }
+
+        .modal h2 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--pink);
+            margin-bottom: 1rem;
+        }
+
+        .modal p {
+            margin-bottom: 1rem;
+            color: var(--pink-light);
+            font-size: 0.9rem;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: 2px solid var(--purple);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--cream);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal input:focus {
+            outline: none;
+            border-color: var(--pink);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.save {
+            background: var(--pink);
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .mode-switcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .mode-switcher button {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--purple);
+            color: var(--pink-light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .mode-switcher button:hover {
+            background: var(--purple);
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--pink-light);
+        }
+
+        .loading-spinner {
+            font-size: 3rem;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.2);
+            border: 2px solid #ff4444;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #ff6b6b;
+            text-align: center;
+        }
+
+        .setup-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .setup-section h3 {
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .setup-section code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.85rem;
+        }
+
+        .setup-section ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .setup-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .score-number {
+                font-size: 3.5rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-stars" id="floatingStars"></div>
+
+    <div class="container">
+        <header>
+            <h1>✨ The Good Noodle Board ✨</h1>
+            <p class="subtitle">Be good... or don't 😈</p>
+            <div class="mode-badge" id="modeBadge">Loading...</div>
+        </header>
+
+        <!-- Setup Instructions (shown if Firebase not configured) -->
+        <div class="setup-section" id="setupSection" style="display: none;">
+            <h3>🔧 Firebase Setup Required</h3>
+            <p>To use this board, you need to set up Firebase:</p>
+            <ol>
+                <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color: var(--pink);">Firebase Console</a></li>
+                <li>Create a new project (or use existing)</li>
+                <li>Go to Project Settings → Add Web App</li>
+                <li>Copy your config and paste it in the <code>firebaseConfig</code> section of this file</li>
+                <li>Go to Realtime Database → Create Database (start in test mode)</li>
+                <li>Set your DOM_PASSWORD in the code</li>
+            </ol>
+            <p style="color: var(--gold);">Once configured, refresh the page!</p>
+        </div>
+
+        <div id="mainContent" style="display: none;">
+            <div class="noodle-name-section">
+                <span class="noodle-name" id="noodleName">Little Brat</span>
+                <button class="edit-name-btn" id="editNameBtn" onclick="openNameModal()">✏️ Edit</button>
+            </div>
+
+            <div class="board">
+                <div class="score-display">
+                    <div class="score-label">Current Stars</div>
+                    <div class="score-number" id="score">0</div>
+                </div>
+
+                <div class="star-grid" id="starGrid"></div>
+
+                <div class="controls" id="domControls">
+                    <button class="btn btn-add" onclick="addStar()">
+                        ⭐ Good Noodle!
+                    </button>
+                    <button class="btn btn-remove" onclick="removeStar()">
+                        💔 Bad Noodle...
+                    </button>
+                </div>
+
+                <div class="status-section">
+                    <div class="status-badge status-neutral" id="statusBadge">
+                        Starting Fresh~
+                    </div>
+                </div>
+
+                <div class="milestones">
+                    <h3 id="milestoneTitle">🎯 Good Noodle Rewards</h3>
+                    <div class="milestone-list" id="milestoneList"></div>
+                </div>
+
+                <div class="history-section">
+                    <button class="history-toggle" onclick="toggleHistory()">
+                        📜 View History
+                    </button>
+                    <div class="history-list" id="historyList"></div>
+                </div>
+
+                <div class="controls" id="resetControls" style="margin-top: 1.5rem;">
+                    <button class="btn btn-reset" onclick="resetBoard()">
+                        🔄 Reset Board
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mode Switcher -->
+    <div class="mode-switcher">
+        <button onclick="openModeModal()" id="modeSwitchBtn">🔐 Switch Mode</button>
+    </div>
+
+    <!-- Name Edit Modal -->
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal">
+            <h2>Edit Noodle Name</h2>
+            <input type="text" id="nameInput" placeholder="Enter name..." maxlength="20">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeNameModal()">Cancel</button>
+                <button class="modal-btn save" onclick="saveName()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mode Switch Modal -->
+    <div class="modal-overlay" id="modeModal">
+        <div class="modal">
+            <h2>🔐 Switch Mode</h2>
+            <p>Enter the Dom password to unlock controls, or leave blank for Brat view.</p>
+            <input type="password" id="passwordInput" placeholder="Enter password...">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeModeModal()">Cancel</button>
+                <button class="modal-btn save" onclick="checkPassword()">Enter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        // ============================================
+        // 🔧 CONFIGURATION - EDIT THESE VALUES
+        // ============================================
+        
+        // Your Firebase config (get this from Firebase Console)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDyVuq2cB68FHnebsgQUe0DHguwh5TqQe8",
+            authDomain: "good-noodle-board.firebaseapp.com",
+            databaseURL: "https://good-noodle-board-default-rtdb.firebaseio.com",
+            projectId: "good-noodle-board",
+            storageBucket: "good-noodle-board.firebasestorage.app",
+            messagingSenderId: "212861087145",
+            appId: "1:212861087145:web:59a1f0cd497295742a28b8"
+        };
+
+        // Set your Dom password here (change this!)
+        const DOM_PASSWORD = "GoodGirl2025";
+
+        // ============================================
+        // END CONFIGURATION
+        // ============================================
+
+        // Milestones
+        const goodMilestones = [
+            { points: 5, reward: "Head pats & 'Good girl' praise session", icon: "🥰" },
+            { points: 10, reward: "Pick the movie/show tonight", icon: "🎬" },
+            { points: 15, reward: "Special treat of choice", icon: "🍰" },
+            { points: 20, reward: "Pamper session & breakfast in bed", icon: "🛁" },
+            { points: 25, reward: "Date night of your choice", icon: "💕" },
+            { points: 30, reward: "One free 'get out of trouble' card", icon: "👼" },
+        ];
+
+        const badMilestones = [
+            { points: -3, reward: "Must use manners (Sir/please/thank you)", icon: "🙊" },
+            { points: -5, reward: "Edge but no finish", icon: "🔥" },
+            { points: -8, reward: "Has to ask permission for treats", icon: "🍬" },
+            { points: -10, reward: "No touching without permission", icon: "🚫" },
+            { points: -15, reward: "Wear something of Dom's choosing", icon: "👗" },
+            { points: -20, reward: "Write an apology letter", icon: "📝" },
+            { points: -25, reward: "No dessert for a week", icon: "😢" },
+        ];
+
+        // State
+        let isDomMode = false;
+        let db = null;
+        let dataRef = null;
+        let state = {
+            score: 0,
+            name: "Little Brat",
+            history: []
+        };
+
+        // Check if Firebase is configured
+        function isFirebaseConfigured() {
+            return firebaseConfig.apiKey !== "YOUR_API_KEY" && 
+                   firebaseConfig.projectId !== "YOUR_PROJECT";
+        }
+
+        // Initialize Firebase
+        function initFirebase() {
+            if (!isFirebaseConfigured()) {
+                document.getElementById('setupSection').style.display = 'block';
+                document.getElementById('modeBadge').textContent = '⚠️ Setup Required';
+                return false;
+            }
+
+            try {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+                dataRef = db.ref('goodNoodleBoard');
+                
+                // Listen for real-time updates
+                dataRef.on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        state = { ...state, ...data };
+                    }
+                    render();
+                });
+
+                document.getElementById('mainContent').style.display = 'block';
+                
+                // Check for saved mode
+                const savedMode = localStorage.getItem('noodleBoardMode');
+                if (savedMode === 'dom') {
+                    isDomMode = true;
+                }
+                updateModeUI();
+                
+                return true;
+            } catch (error) {
+                console.error('Firebase init error:', error);
+                document.getElementById('setupSection').style.display = 'block';
+                document.getElementById('modeBadge').textContent = '❌ Firebase Error';
+                return false;
+            }
+        }
+
+        // Save state to Firebase
+        function saveState() {
+            if (dataRef) {
+                dataRef.set(state);
+            }
+        }
+
+        // Update UI based on mode
+        function updateModeUI() {
+            const badge = document.getElementById('modeBadge');
+            const domControls = document.getElementById('domControls');
+            const resetControls = document.getElementById('resetControls');
+            const editNameBtn = document.getElementById('editNameBtn');
+            
+            if (isDomMode) {
+                badge.className = 'mode-badge dom';
+                badge.textContent = '👑 Dom Mode';
+                domControls.classList.remove('hidden');
+                resetControls.style.display = 'flex';
+                editNameBtn.style.display = 'inline-block';
+            } else {
+                badge.className = 'mode-badge brat';
+                badge.textContent = '🎀 Brat View';
+                domControls.classList.add('hidden');
+                resetControls.style.display = 'none';
+                editNameBtn.style.display = 'none';
+            }
+        }
+
+        // Render everything
+        function render() {
+            renderScore();
+            renderStars();
+            renderStatus();
+            renderMilestones();
+            renderHistory();
+            renderName();
+        }
+
+        function renderName() {
+            document.getElementById('noodleName').textContent = state.name;
+        }
+
+        function renderScore() {
+            const scoreEl = document.getElementById('score');
+            scoreEl.textContent = state.score;
+            scoreEl.classList.add('bounce');
+            setTimeout(() => scoreEl.classList.remove('bounce'), 500);
+        }
+
+        function renderStars() {
+            const grid = document.getElementById('starGrid');
+            grid.innerHTML = '';
+            
+            const starCount = Math.abs(state.score);
+            const isPositive = state.score >= 0;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('span');
+                star.className = 'star';
+                star.textContent = isPositive ? '⭐' : '💔';
+                star.style.animationDelay = `${i * 0.05}s`;
+                grid.appendChild(star);
+            }
+        }
+
+        function renderStatus() {
+            const badge = document.getElementById('statusBadge');
+            const score = state.score;
+            
+            if (score >= 15) {
+                badge.className = 'status-badge status-good';
+                badge.textContent = '🌟 Perfect Angel! 🌟';
+            } else if (score >= 10) {
+                badge.className = 'status-badge status-good';
+                badge.textContent = '✨ Such a Good Noodle! ✨';
+            } else if (score >= 5) {
+                badge.className = 'status-badge status-neutral';
+                badge.textContent = '😊 Doing Well~';
+            } else if (score > 0) {
+                badge.className = 'status-badge status-neutral';
+                badge.textContent = '🙂 Keep it up!';
+            } else if (score === 0) {
+                badge.className = 'status-badge status-neutral';
+                badge.textContent = '😶 Starting Fresh~';
+            } else if (score > -5) {
+                badge.className = 'status-badge status-neutral';
+                badge.textContent = '😳 Someone\'s being bratty...';
+            } else if (score > -10) {
+                badge.className = 'status-badge status-bad';
+                badge.textContent = '😈 Naughty Noodle!';
+            } else {
+                badge.className = 'status-badge status-bad';
+                badge.textContent = '🔥 Maximum Brat Mode 🔥';
+            }
+        }
+
+        function renderMilestones() {
+            const list = document.getElementById('milestoneList');
+            const title = document.getElementById('milestoneTitle');
+            list.innerHTML = '';
+            
+            let milestonesToShow = [];
+            
+            if (state.score >= 0) {
+                title.textContent = '🎯 Good Noodle Rewards';
+                title.style.color = 'var(--gold)';
+                milestonesToShow = goodMilestones.sort((a, b) => a.points - b.points);
+            } else {
+                title.textContent = '😈 Naughty Noodle Consequences';
+                title.style.color = 'var(--pink)';
+                milestonesToShow = badMilestones.sort((a, b) => b.points - a.points);
+            }
+            
+            milestonesToShow.forEach(m => {
+                const achieved = (m.points > 0 && state.score >= m.points) || 
+                               (m.points < 0 && state.score <= m.points);
+                
+                const div = document.createElement('div');
+                div.className = `milestone ${achieved ? 'achieved' : ''}`;
+                div.innerHTML = `
+                    <span class="milestone-icon">${m.icon}</span>
+                    <div class="milestone-info">
+                        <span class="milestone-points">${m.points > 0 ? '+' : ''}${m.points} stars</span>
+                        <div class="milestone-reward">${m.reward}</div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
+            
+            if (!state.history) state.history = [];
+            
+            const recent = state.history.slice(-20).reverse();
+            recent.forEach(item => {
+                const div = document.createElement('div');
+                div.className = `history-item ${item.type}`;
+                div.innerHTML = `
+                    <span>${item.type === 'add' ? '⭐ +1' : '💔 -1'} ${item.reason || ''}</span>
+                    <span>${new Date(item.time).toLocaleString()}</span>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function addStar() {
+            if (!isDomMode) return;
+            
+            state.score++;
+            if (!state.history) state.history = [];
+            state.history.push({
+                type: 'add',
+                time: Date.now(),
+                reason: ''
+            });
+            saveState();
+            
+            const milestone = goodMilestones.find(m => state.score === m.points);
+            if (milestone) {
+                celebrate(milestone.icon);
+            }
+        }
+
+        function removeStar() {
+            if (!isDomMode) return;
+            
+            state.score--;
+            if (!state.history) state.history = [];
+            state.history.push({
+                type: 'remove',
+                time: Date.now(),
+                reason: ''
+            });
+            saveState();
+            
+            const milestone = badMilestones.find(m => state.score === m.points);
+            if (milestone) {
+                celebrate(milestone.icon);
+            }
+        }
+
+        function celebrate(emoji) {
+            const el = document.createElement('div');
+            el.className = 'celebration';
+            el.textContent = emoji;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        function toggleHistory() {
+            const list = document.getElementById('historyList');
+            list.classList.toggle('show');
+        }
+
+        function resetBoard() {
+            if (!isDomMode) return;
+            
+            if (confirm('Are you sure you want to reset the board? This cannot be undone!')) {
+                state.score = 0;
+                state.history = [];
+                saveState();
+            }
+        }
+
+        // Name Modal
+        function openNameModal() {
+            if (!isDomMode) return;
+            document.getElementById('nameModal').classList.add('show');
+            document.getElementById('nameInput').value = state.name;
+            document.getElementById('nameInput').focus();
+        }
+
+        function closeNameModal() {
+            document.getElementById('nameModal').classList.remove('show');
+        }
+
+        function saveName() {
+            const name = document.getElementById('nameInput').value.trim();
+            if (name) {
+                state.name = name;
+                saveState();
+            }
+            closeNameModal();
+        }
+
+        // Mode Modal
+        function openModeModal() {
+            document.getElementById('modeModal').classList.add('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+
+        function closeModeModal() {
+            document.getElementById('modeModal').classList.remove('show');
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            
+            if (password === DOM_PASSWORD) {
+                isDomMode = true;
+                localStorage.setItem('noodleBoardMode', 'dom');
+            } else {
+                isDomMode = false;
+                localStorage.setItem('noodleBoardMode', 'brat');
+            }
+            
+            updateModeUI();
+            closeModeModal();
+        }
+
+        // Event listeners
+        document.getElementById('nameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') saveName();
+        });
+
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        document.getElementById('nameModal').addEventListener('click', (e) => {
+            if (e.target.id === 'nameModal') closeNameModal();
+        });
+
+        document.getElementById('modeModal').addEventListener('click', (e) => {
+            if (e.target.id === 'modeModal') closeModeModal();
+        });
+
+        // Create floating background stars
+        function createFloatingStars() {
+            const container = document.getElementById('floatingStars');
+            const stars = ['⭐', '✨', '💫', '🌟', '💕'];
+            
+            for (let i = 0; i < 15; i++) {
+                const star = document.createElement('div');
+                star.className = 'floating-star';
+                star.textContent = stars[Math.floor(Math.random() * stars.length)];
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.animationDuration = `${15 + Math.random() * 10}s`;
+                star.style.animationDelay = `${Math.random() * 15}s`;
+                container.appendChild(star);
+            }
+        }
+
+        // Initialize
+        createFloatingStars();
+        initFirebase();
+    </script>
+</body>
+</html>
